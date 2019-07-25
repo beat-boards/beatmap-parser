@@ -2,6 +2,7 @@
 
 extern crate semver;
 extern crate serde;
+extern crate serde_repr;
 
 use semver::Version;
 use serde::{Deserialize, Serialize};
@@ -50,6 +51,7 @@ pub mod beatmap {
         }
 
         pub mod difficulty_beatmap {
+            use serde_repr::*;
             use super::{Deserialize, Serialize};
 
             #[derive(Serialize, Deserialize, Debug)]
@@ -61,6 +63,16 @@ pub mod beatmap {
                 ExpertPlus,
             }
 
+            #[derive(Serialize_repr, Deserialize_repr, PartialEq, PartialOrd, Debug)]
+            #[repr(u8)]
+            pub enum DifficultyRank {
+                Easy = 1,
+                Normal = 3,
+                Hard = 5,
+                Expert = 7,
+                ExpertPlus = 9,
+            }
+
             #[derive(Serialize, Deserialize, Debug)]
             pub struct CustomData {
                 pub difficulty_label: String,
@@ -70,7 +82,7 @@ pub mod beatmap {
         #[derive(Serialize, Deserialize, Debug)]
         pub struct DifficultyBeatmap {
             pub difficulty: difficulty_beatmap::Difficulty,
-            pub difficulty_rank: u32,
+            pub difficulty_rank: difficulty_beatmap::DifficultyRank,
             pub beatmap_filename: String,
             pub note_jump_movement_speed: f64,
             pub note_jump_start_beat_offset: f64,
