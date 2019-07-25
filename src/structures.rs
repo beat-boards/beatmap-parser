@@ -1,3 +1,5 @@
+// https://github.com/Kylemc1413/SongCore#readme
+
 extern crate semver;
 extern crate serde;
 
@@ -15,7 +17,7 @@ pub enum Environment {
 }
 
 pub mod custom_data {
-    use super::*;
+    use serde::{Serialize, Deserialize};
 
     #[derive(Serialize, Deserialize)]
     pub struct Contributor {
@@ -30,6 +32,50 @@ pub struct CustomData {
     pub contributors: Vec<custom_data::Contributor>,
     pub custom_environment: String,
     pub custom_environment_hash: String,
+}
+
+pub mod difficulty_beatmap_set {
+    use serde::{Serialize, Deserialize};
+
+    #[derive(Serialize, Deserialize)]
+    pub enum BeatmapCharacteritic {
+        Standard,
+        NoArrows,
+        OneSaber,
+        Lawless,
+        Lightshow,
+    }
+
+    #[derive(Serialize, Deserialize)]
+    pub enum Difficulty {
+        Easy,
+        Normal,
+        Hard,
+        Expert,
+        ExpertPlus,
+    }
+
+    #[derive(Serialize, Deserialize)]
+    pub struct CustomData {
+        pub difficulty_label: String,
+        
+    }
+
+    #[derive(Serialize, Deserialize)]
+    pub struct DifficultyBeatmap {
+        pub difficulty: Difficulty,
+        pub difficulty_rank: u32,
+        pub beatmap_filename: String,
+        pub note_jump_movement_speed: f64,
+        pub note_jump_start_beat_offset: f64,
+        pub custom_data: CustomData
+    }
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct DifficultyBeatmapSet {
+    pub beatmap_characteristic_name: difficulty_beatmap_set::BeatmapCharacteritic,
+    pub difficulty_beatmaps: Vec<difficulty_beatmap_set::DifficultyBeatmap>
 }
 
 #[derive(Serialize, Deserialize)]
@@ -49,4 +95,5 @@ pub struct Beatmap {
     pub cover_image_filename: String,
     pub environment_name: Environment,
     pub custom_data: CustomData,
+    pub difficulty_beatmap_sets: Vec<DifficultyBeatmapSet>,
 }
