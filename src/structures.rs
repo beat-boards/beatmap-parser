@@ -51,8 +51,8 @@ pub mod beatmap {
         }
 
         pub mod difficulty_beatmap {
-            use serde_repr::*;
             use super::{Deserialize, Serialize};
+            use serde_repr::*;
 
             #[derive(Serialize, Deserialize, Debug)]
             pub enum Difficulty {
@@ -73,9 +73,28 @@ pub mod beatmap {
                 ExpertPlus = 9,
             }
 
+            pub mod custom_data {
+                use super::{Deserialize, Serialize};
+
+                #[derive(Serialize, Deserialize, Debug)]
+                pub struct Color {
+                    pub r: f64,
+                    pub g: f64,
+                    pub b: f64,
+                }
+            }
+
             #[derive(Serialize, Deserialize, Debug)]
             pub struct CustomData {
                 pub difficulty_label: String,
+                pub editor_offset: f64,
+                pub editor_old_offset: f64,
+                pub color_left: Option<custom_data::Color>,
+                pub color_right: Option<custom_data::Color>,
+                pub warning: Vec<String>,
+                pub information: Vec<String>,
+                pub suggestions: Vec<String>,
+                pub requirements: Vec<String>,
             }
         }
 
