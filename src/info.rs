@@ -193,7 +193,7 @@ impl Beatmap {
         Ok(serde_json::from_str(&contents)?)
     }
 
-    /// Returns a new `Beatmap` instance from an BeatSaver key
+    /// Returns a new `Beatmap` instance from a BeatSaver key
     #[cfg(feature = "beatsaver")]
     pub fn from_beatsaver_key(key: &str) -> Result<Beatmap, Box<dyn Error>> {
         let mut response =
@@ -208,7 +208,7 @@ impl Beatmap {
         Ok(serde_json::from_str(&contents)?)
     }
 
-    /// Returns a new `Beatmap` instance from an BeatSaver key
+    /// Returns a new `Beatmap` instance from a BeatSaver key
     #[cfg(feature = "beatsaver")]
     pub fn from_beatsaver_url(url: &str) -> Result<Beatmap, Box<dyn Error>> {
         let url_string = String::from(url);
@@ -218,7 +218,10 @@ impl Beatmap {
         {
             Beatmap::from_beatsaver_key(url_string.split("/").last().unwrap_or("invalid"))
         } else {
-            Err(Box::new(io::Error::new(io::ErrorKind::InvalidInput, "Invalid url")))
+            Err(Box::new(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                "Invalid url",
+            )))
         }
     }
 }
