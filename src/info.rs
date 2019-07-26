@@ -1,11 +1,10 @@
-// https://github.com/Kylemc1413/SongCore#readme
-
 extern crate semver;
 extern crate serde;
 extern crate serde_repr;
 
 use semver::Version;
 use serde::{Deserialize, Serialize};
+use std::error::Error;
 
 pub mod beatmap {
     use super::{Deserialize, Serialize};
@@ -102,7 +101,7 @@ pub mod beatmap {
                 pub color_left: Option<custom_data::Color>,
                 #[serde(rename = "_colorRight")]
                 pub color_right: Option<custom_data::Color>,
-                #[serde(rename = "_warning")]
+                #[serde(rename = "_warnings")]
                 pub warning: Vec<String>,
                 #[serde(rename = "_information")]
                 pub information: Vec<String>,
@@ -173,4 +172,27 @@ pub struct Beatmap {
     pub custom_data: beatmap::CustomData,
     #[serde(rename = "_difficultyBeatmapSets")]
     pub difficulty_beatmap_sets: Vec<beatmap::DifficultyBeatmapSet>,
+}
+
+impl Beatmap {
+    /// Returns a new `Beatmap` instance from an `info.dat` file
+    pub fn from_dat(filename: &str) -> Result<Beatmap, Box<dyn Error>> {
+        let contents = std::fs::read_to_string(filename)?;
+        Ok(serde_json::from_str(&contents)?)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::path::PathBuf;
+    use super::Beatmap;
+
+    #[test]
+    fn from_dat() {
+        let mut filename = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        filename.push("resources/test/info.dat");
+
+        let result = Beatmap::from_dat(filename.to_str().unwrap()).unwrap();
+        println!("{:#?}", result);
+    }
 }
