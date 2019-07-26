@@ -196,7 +196,8 @@ impl Beatmap {
     /// Returns a new `Beatmap` instance from an BeatSaver key
     #[cfg(feature = "beatsaver")]
     pub fn from_beatsaver_key(key: &str) -> Result<Beatmap, Box<dyn Error>> {
-        let mut response = reqwest::get(&format!("https://beatsaver.com/api/download/key/{}", key))?;
+        let mut response =
+            reqwest::get(&format!("https://beatsaver.com/api/download/key/{}", key))?;
         let mut temp_file = tempfile::tempfile()?;
         io::copy(&mut response, &mut temp_file)?;
 
@@ -206,12 +207,26 @@ impl Beatmap {
         info_file.read_to_string(&mut contents)?;
         Ok(serde_json::from_str(&contents)?)
     }
+
+    /// Returns a new `Beatmap` instance from an BeatSaver key
+    #[cfg(feature = "beatsaver")]
+    pub fn from_beatsaver_url(url: &str) -> Result<Beatmap, Box<dyn Error>> {
+        let url_string = String::from(url);
+        if url_string.starts_with("https://beatsaver.com/api/download/key/")
+            || url_string.starts_with("https://beatsaver.com/beatmap/")
+            || url_string.starts_with("beatsaver://")
+        {
+            Beatmap::from_beatsaver_key(url_string.split("/").last().unwrap_or("invalid"))
+        } else {
+            Err(Box::new(io::Error::new(io::ErrorKind::InvalidInput, "Invalid url")))
+        }
+    }
 }
 
 #[cfg(test)]
 mod tests {
-    use std::path::PathBuf;
     use super::Beatmap;
+    use std::path::PathBuf;
 
     fn cargo_dir() -> PathBuf {
         PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -230,6 +245,13 @@ mod tests {
     #[test]
     fn from_beatsaver_key() {
         let result = Beatmap::from_beatsaver_key("570").unwrap();
+        println!("{:#?}", result);
+    }
+
+    #[cfg(feature = "beatsaver")]
+    #[test]
+    fn from_beatsaver_url() {
+        let result = Beatmap::from_beatsaver_url("https://beatsaver.com/beatmap/570").unwrap();
         println!("{:#?}", result);
     }
 }
