@@ -2,9 +2,21 @@ extern crate semver;
 extern crate serde;
 extern crate serde_repr;
 
+#[cfg(feature = "beatsaver")]
+extern crate reqwest;
+#[cfg(feature = "beatsaver")]
+extern crate tempfile;
+#[cfg(feature = "beatsaver")]
+extern crate zip;
+
 use semver::Version;
 use serde::{Deserialize, Serialize};
 use std::error::Error;
+
+#[cfg(feature = "beatsaver")]
+use std::io;
+#[cfg(feature = "beatsaver")]
+use std::io::Read;
 
 pub mod beatmap {
     use super::{Deserialize, Serialize};
@@ -176,8 +188,22 @@ pub struct Beatmap {
 
 impl Beatmap {
     /// Returns a new `Beatmap` instance from an `info.dat` file
-    pub fn from_dat(filename: &str) -> Result<Beatmap, Box<dyn Error>> {
+    pub fn from_file_dat(filename: &str) -> Result<Beatmap, Box<dyn Error>> {
         let contents = std::fs::read_to_string(filename)?;
+        Ok(serde_json::from_str(&contents)?)
+    }
+
+    /// Returns a new `Beatmap` instance from an BeatSaver key
+    #[cfg(feature = "beatsaver")]
+    pub fn from_beatsaver_key(key: &str) -> Result<Beatmap, Box<dyn Error>> {
+        let mut response = reqwest::get(&format!("https://beatsaver.com/api/download/key/{}", key))?;
+        let mut temp_file = tempfile::tempfile()?;
+        io::copy(&mut response, &mut temp_file)?;
+
+        let mut archive = zip::ZipArchive::new(temp_file)?;
+        let mut info_file = archive.by_name("info.dat")?;
+        let mut contents = String::new();
+        info_file.read_to_string(&mut contents)?;
         Ok(serde_json::from_str(&contents)?)
     }
 }
@@ -187,12 +213,23 @@ mod tests {
     use std::path::PathBuf;
     use super::Beatmap;
 
+    fn cargo_dir() -> PathBuf {
+        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+    }
+
     #[test]
-    fn from_dat() {
-        let mut filename = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    fn from_file_dat() {
+        let mut filename = cargo_dir();
         filename.push("resources/test/info.dat");
 
-        let result = Beatmap::from_dat(filename.to_str().unwrap()).unwrap();
+        let result = Beatmap::from_file_dat(filename.to_str().unwrap()).unwrap();
+        println!("{:#?}", result);
+    }
+
+    #[cfg(feature = "beatsaver")]
+    #[test]
+    fn from_beatsaver_key() {
+        let result = Beatmap::from_beatsaver_key("570").unwrap();
         println!("{:#?}", result);
     }
 }
