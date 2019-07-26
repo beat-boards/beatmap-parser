@@ -208,7 +208,7 @@ impl Beatmap {
         Ok(serde_json::from_str(&contents)?)
     }
 
-    /// Returns a new `Beatmap` instance from a BeatSaver key
+    /// Returns a new `Beatmap` instance from a BeatSaver url
     #[cfg(feature = "beatsaver")]
     pub fn from_beatsaver_url(url: &str) -> Result<Beatmap, Box<dyn Error>> {
         let url_string = String::from(url);
