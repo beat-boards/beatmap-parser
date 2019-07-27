@@ -18,7 +18,7 @@ use std::io;
 #[cfg(feature = "beatsaver")]
 use std::io::Read;
 
-/// Contains custom types used by Beatmap
+/// Contains custom types used by Info
 pub mod info {
     use super::{Deserialize, Serialize};
 
@@ -33,7 +33,7 @@ pub mod info {
         MonstercatEnvironment,
     }
 
-    /// Contains custom types used by beatmap::CustomData
+    /// Contains custom types used by info::CustomData
     pub mod custom_data {
         use super::{Deserialize, Serialize};
 
@@ -66,7 +66,7 @@ pub mod info {
         pub custom_environment_hash: String,
     }
 
-    /// Contains custom types used by beatmap::DifficultyBeatmapSet
+    /// Contains custom types used by info::DifficultyBeatmapSet
     pub mod difficulty_beatmap_set {
         use super::{Deserialize, Serialize};
 
@@ -80,7 +80,7 @@ pub mod info {
             Lightshow,
         }
 
-        /// Contains custom types used by beatmap::difficulty_beatmap_set::DifficultyBeatmap
+        /// Contains custom types used by info::difficulty_beatmap_set::DifficultyBeatmap
         pub mod difficulty_beatmap {
             use super::{Deserialize, Serialize};
             use serde_repr::*;
@@ -106,7 +106,7 @@ pub mod info {
                 ExpertPlus = 9,
             }
 
-            /// Contains custom types used by  beatmap::difficulty_beatmap_set::difficulty_beatmap::CustomData
+            /// Contains custom types used by info::difficulty_beatmap_set::difficulty_beatmap::CustomData
             pub mod custom_data {
                 use super::{Deserialize, Serialize};
 
@@ -198,7 +198,7 @@ pub mod info {
     }
 }
 
-/// Represents a Beat Saber map
+/// Represents an `info.dat` file
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Info {
     /// Format version
