@@ -4,3 +4,7 @@ Cargo.lock
 
 # CLion files
 .idea/
+
+# Large test resources
+resources/test/cover.jpg
+resources/test/song.egg

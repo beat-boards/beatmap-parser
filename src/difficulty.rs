@@ -7,8 +7,8 @@ use serde::{Deserialize, Serialize};
 
 /// Contains custom types used by Difficulty
 pub mod difficulty {
-    use serde_repr::*;
     use super::{Deserialize, Serialize};
+    use serde_repr::*;
 
     /// Represents a BPM change
     #[derive(Serialize, Deserialize, Debug)]

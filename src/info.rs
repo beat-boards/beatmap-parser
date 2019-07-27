@@ -96,7 +96,9 @@ pub mod info {
             }
 
             /// Represents a difficulty rank
-            #[derive(Serialize_repr, Deserialize_repr, PartialEq, PartialOrd, Eq, Ord, Clone, Hash, Debug)]
+            #[derive(
+                Serialize_repr, Deserialize_repr, PartialEq, PartialOrd, Eq, Ord, Clone, Hash, Debug,
+            )]
             #[repr(u8)]
             pub enum DifficultyRank {
                 Easy = 1,
@@ -300,35 +302,35 @@ impl Info {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::Info;
-    use std::path::PathBuf;
-
-    fn cargo_dir() -> PathBuf {
-        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-    }
-
-    #[test]
-    fn from_file_dat() {
-        let mut filename = cargo_dir();
-        filename.push("resources/test/info.dat");
-
-        let result = Info::from_file_dat(filename.to_str().unwrap()).unwrap();
-        println!("{:#?}", result);
-    }
-
-    #[cfg(feature = "beatsaver")]
-    #[test]
-    fn from_beatsaver_key() {
-        let result = Info::from_beatsaver_key("570").unwrap();
-        println!("{:#?}", result);
-    }
-
-    #[cfg(feature = "beatsaver")]
-    #[test]
-    fn from_beatsaver_url() {
-        let result = Info::from_beatsaver_url("https://beatsaver.com/beatmap/570").unwrap();
-        println!("{:#?}", result);
-    }
-}
+//#[cfg(test)]
+//mod tests {
+//    use super::Info;
+//    use std::path::PathBuf;
+//
+//    fn cargo_dir() -> PathBuf {
+//        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+//    }
+//
+//    #[test]
+//    fn from_file_dat() {
+//        let mut filename = cargo_dir();
+//        filename.push("resources/test/info.dat");
+//
+//        let result = Info::from_file_dat(filename.to_str().unwrap()).unwrap();
+//        println!("{:#?}", result);
+//    }
+//
+//    #[cfg(feature = "beatsaver")]
+//    #[test]
+//    fn from_beatsaver_key() {
+//        let result = Info::from_beatsaver_key("570").unwrap();
+//        println!("{:#?}", result);
+//    }
+//
+//    #[cfg(feature = "beatsaver")]
+//    #[test]
+//    fn from_beatsaver_url() {
+//        let result = Info::from_beatsaver_url("https://beatsaver.com/beatmap/570").unwrap();
+//        println!("{:#?}", result);
+//    }
+//}
