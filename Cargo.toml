@@ -7,11 +7,11 @@ license = "MIT"
 description = "Parse beatmap information, the fast way."
 repository = "https://github.com/beat-boards/beatmap-parser"
 keywords = [
-    "beat saber",
+    "beatsaber",
     "beatmap",
-    "map",
     "parser",
-    "serde",
+    "saber",
+    "map",
 ]
 categories = [ "games", "parsing" ]
 
