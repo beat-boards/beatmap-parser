@@ -1,0 +1,1 @@
+You should extract a beatmap to use while running tests here. I personally use [Mr. Blue Sky](https://beatsaver.com/beatmap/570) but any map will work. 
