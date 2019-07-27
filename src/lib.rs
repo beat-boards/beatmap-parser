@@ -1,4 +1,4 @@
+/// Contains types related to the difficulty files
+pub mod difficulty;
+/// Contains types related to the `info.dat` file
 pub mod info;
-
-pub use info::beatmap::difficulty_beatmap_set::difficulty_beatmap::DifficultyRank;
-pub use info::Beatmap;

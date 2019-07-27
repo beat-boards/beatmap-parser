@@ -19,7 +19,7 @@ use std::io;
 use std::io::Read;
 
 /// Contains custom types used by Beatmap
-pub mod beatmap {
+pub mod info {
     use super::{Deserialize, Serialize};
 
     /// Represents a game environment
@@ -200,7 +200,7 @@ pub mod beatmap {
 
 /// Represents a Beat Saber map
 #[derive(Serialize, Deserialize, Debug)]
-pub struct Beatmap {
+pub struct Info {
     /// Format version
     #[serde(rename = "_version")]
     pub version: Version,
@@ -240,25 +240,25 @@ pub struct Beatmap {
     pub cover_image_filename: String,
     /// Game environment to use
     #[serde(rename = "_environmentName")]
-    pub environment_name: beatmap::Environment,
+    pub environment_name: info::Environment,
     /// Custom data used by mods
     #[serde(rename = "_customData")]
-    pub custom_data: beatmap::CustomData,
+    pub custom_data: info::CustomData,
     /// A set of maps for a given characteristic
     #[serde(rename = "_difficultyBeatmapSets")]
-    pub difficulty_beatmap_sets: Vec<beatmap::DifficultyBeatmapSet>,
+    pub difficulty_beatmap_sets: Vec<info::DifficultyBeatmapSet>,
 }
 
-impl Beatmap {
+impl Info {
     /// Returns a new `Beatmap` instance from an `info.dat` file
-    pub fn from_file_dat(filename: &str) -> Result<Beatmap, Box<dyn Error>> {
+    pub fn from_file_dat(filename: &str) -> Result<Info, Box<dyn Error>> {
         let contents = std::fs::read_to_string(filename)?;
         Ok(serde_json::from_str(&contents)?)
     }
 
     /// Returns a new `Beatmap` instance from a BeatSaver key
     #[cfg(feature = "beatsaver")]
-    pub fn from_beatsaver_key(key: &str) -> Result<Beatmap, Box<dyn Error>> {
+    pub fn from_beatsaver_key(key: &str) -> Result<Info, Box<dyn Error>> {
         let mut response =
             reqwest::get(&format!("https://beatsaver.com/api/download/key/{}", key))?;
         let mut temp_file = tempfile::tempfile()?;
@@ -273,13 +273,24 @@ impl Beatmap {
 
     /// Returns a new `Beatmap` instance from a BeatSaver url
     #[cfg(feature = "beatsaver")]
-    pub fn from_beatsaver_url(url: &str) -> Result<Beatmap, Box<dyn Error>> {
+    pub fn from_beatsaver_url(url: &str) -> Result<Info, Box<dyn Error>> {
         let url_string = String::from(url);
         if url_string.starts_with("https://beatsaver.com/api/download/key/")
             || url_string.starts_with("https://beatsaver.com/beatmap/")
             || url_string.starts_with("beatsaver://")
         {
-            Beatmap::from_beatsaver_key(url_string.split("/").last().unwrap_or("invalid"))
+            let mut key = String::from(url_string.split("/").last().unwrap_or("invalid"));
+            if key == "invalid" {
+                Err(Box::new(io::Error::new(
+                    io::ErrorKind::InvalidInput,
+                    "Can't extract key from url",
+                )))
+            }
+            if key.ends_with("/") {
+                key.pop();
+            }
+
+            Info::from_beatsaver_key(&key)
         } else {
             Err(Box::new(io::Error::new(
                 io::ErrorKind::InvalidInput,
@@ -291,7 +302,7 @@ impl Beatmap {
 
 #[cfg(test)]
 mod tests {
-    use super::Beatmap;
+    use super::Info;
     use std::path::PathBuf;
 
     fn cargo_dir() -> PathBuf {
@@ -303,21 +314,21 @@ mod tests {
         let mut filename = cargo_dir();
         filename.push("resources/test/info.dat");
 
-        let result = Beatmap::from_file_dat(filename.to_str().unwrap()).unwrap();
+        let result = Info::from_file_dat(filename.to_str().unwrap()).unwrap();
         println!("{:#?}", result);
     }
 
     #[cfg(feature = "beatsaver")]
     #[test]
     fn from_beatsaver_key() {
-        let result = Beatmap::from_beatsaver_key("570").unwrap();
+        let result = Info::from_beatsaver_key("570").unwrap();
         println!("{:#?}", result);
     }
 
     #[cfg(feature = "beatsaver")]
     #[test]
     fn from_beatsaver_url() {
-        let result = Beatmap::from_beatsaver_url("https://beatsaver.com/beatmap/570").unwrap();
+        let result = Info::from_beatsaver_url("https://beatsaver.com/beatmap/570").unwrap();
         println!("{:#?}", result);
     }
 }
