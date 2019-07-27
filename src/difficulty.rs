@@ -36,7 +36,7 @@ pub mod difficulty {
         pub event_type: u8,
         /// Value of the event
         #[serde(rename = "_value")]
-        pub value: u8,
+        pub value: u32,
     }
 
     /// Represents an horizontal line index
