@@ -140,9 +140,9 @@ pub mod info {
                 #[serde(rename = "_difficultyLabel")]
                 pub difficulty_label: String,
                 #[serde(rename = "_editorOffset")]
-                pub editor_offset: f64,
+                pub editor_offset: u32,
                 #[serde(rename = "_editorOldOffset")]
-                pub editor_old_offset: f64,
+                pub editor_old_offset: u32,
                 /// Left side color override if CustomColors is installed and enabled
                 #[serde(rename = "_colorLeft")]
                 pub color_left: Option<custom_data::Color>,
