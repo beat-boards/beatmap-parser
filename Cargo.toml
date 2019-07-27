@@ -1,8 +1,19 @@
 [package]
-name = "beatmap-parser"
+name = "beatmap_parser"
 version = "0.1.0"
 authors = ["Raphaël Thériault <raphael_theriault@outlook.com>"]
 edition = "2018"
+license = "MIT"
+description = "Parse beatmap information, the fast way."
+repository = "https://github.com/beat-boards/beatmap-parser"
+keywords = [
+    "beat saber",
+    "beatmap",
+    "map",
+    "parser",
+    "serde",
+]
+categories = [ "games", "parsing" ]
 
 [dependencies]
 semver = { version = "0.9", features = ["serde"] }
