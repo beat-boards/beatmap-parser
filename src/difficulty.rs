@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 
 /// Contains custom types used by Difficulty
 pub mod difficulty {
+    use serde_repr::*;
     use super::{Deserialize, Serialize};
 
     /// Represents a BPM change
@@ -39,7 +40,7 @@ pub mod difficulty {
     }
 
     /// Represents an horizontal line index
-    #[derive(Serialize_repr, Deserialize_repr, PartialEq, PartialOrd, Debug)]
+    #[derive(Serialize_repr, Deserialize_repr, PartialEq, PartialOrd, Eq, Ord, Debug)]
     #[repr(u8)]
     pub enum LineIndex {
         FarLeft = 0,
@@ -50,8 +51,10 @@ pub mod difficulty {
 
     /// Contains custom types used by difficulty::Note
     pub mod note {
+        use serde_repr::*;
+
         /// Represents a vertical line layer
-        #[derive(Serialize_repr, Deserialize_repr, PartialEq, PartialOrd, Debug)]
+        #[derive(Serialize_repr, Deserialize_repr, PartialEq, PartialOrd, Eq, Ord, Debug)]
         #[repr(u8)]
         pub enum LineLayer {
             Bottom = 0,
@@ -60,7 +63,7 @@ pub mod difficulty {
         }
 
         /// Represents a note type
-        #[derive(Serialize_repr, Deserialize_repr, PartialEq, Debug)]
+        #[derive(Serialize_repr, Deserialize_repr, PartialEq, Eq, Debug)]
         #[repr(u8)]
         pub enum NoteType {
             Red = 0,
@@ -69,7 +72,7 @@ pub mod difficulty {
         }
 
         /// Represents a note cut direction
-        #[derive(Serialize_repr, Deserialize_repr, PartialEq, Debug)]
+        #[derive(Serialize_repr, Deserialize_repr, PartialEq, Eq, Debug)]
         #[repr(u8)]
         pub enum CutDirection {
             Up = 0,
@@ -105,7 +108,9 @@ pub mod difficulty {
 
     /// Contains custom types used by difficulty::Obstacle
     pub mod obstacle {
-        #[derive(Serialize_repr, Deserialize_repr, PartialEq, Debug)]
+        use serde_repr::*;
+
+        #[derive(Serialize_repr, Deserialize_repr, PartialEq, Eq, Debug)]
         #[repr(u8)]
         pub enum ObstacleType {
             Wall = 0,

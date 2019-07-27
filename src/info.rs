@@ -71,8 +71,8 @@ pub mod info {
         use super::{Deserialize, Serialize};
 
         /// Represent a characteristic
-        #[derive(Serialize, Deserialize, Debug)]
-        pub enum BeatmapCharacteritic {
+        #[derive(Serialize, Deserialize, PartialEq, Eq, Clone, Hash, Debug)]
+        pub enum BeatmapCharacteristic {
             Standard,
             NoArrows,
             OneSaber,
@@ -96,7 +96,7 @@ pub mod info {
             }
 
             /// Represents a difficulty rank
-            #[derive(Serialize_repr, Deserialize_repr, PartialEq, PartialOrd, Debug)]
+            #[derive(Serialize_repr, Deserialize_repr, PartialEq, PartialOrd, Eq, Ord, Clone, Hash, Debug)]
             #[repr(u8)]
             pub enum DifficultyRank {
                 Easy = 1,
@@ -191,7 +191,7 @@ pub mod info {
     pub struct DifficultyBeatmapSet {
         /// Characteristic of the beatmap set
         #[serde(rename = "_beatmapCharacteristicName")]
-        pub beatmap_characteristic_name: difficulty_beatmap_set::BeatmapCharacteritic,
+        pub beatmap_characteristic_name: difficulty_beatmap_set::BeatmapCharacteristic,
         /// Set of difficulty beatmaps for the current characteristic
         #[serde(rename = "_difficultyBeatmaps")]
         pub difficulty_beatmaps: Vec<difficulty_beatmap_set::DifficultyBeatmap>,
