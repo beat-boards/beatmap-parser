@@ -21,6 +21,8 @@ use std::path::Path;
 use std::io;
 #[cfg(feature = "beatsaver")]
 use std::io::Read;
+#[cfg(feature = "beatsaver")]
+use std::time::Duration;
 
 #[cfg(feature = "audio")]
 use ogg_metadata::OggFormat;
@@ -124,22 +126,25 @@ impl Beatmap {
     #[cfg(feature = "beatsaver")]
     pub fn from_beatsaver_key(key: &str) -> Result<Beatmap, Box<dyn Error>> {
         // Download the file and store it temporarly
-        let mut response =
-            reqwest::get(&format!("https://beatsaver.com/api/download/key/{}", key))?;
+        let mut response = reqwest::Client::builder()
+            .timeout(Duration::from_secs(120))
+            .build()?
+            .get(&format!("https://beatsaver.com/api/download/key/{}", key))
+            .send()?;
         let mut temp_file = tempfile::tempfile()?;
         io::copy(&mut response, &mut temp_file)?;
 
         // Create the zip archive object
         let mut archive = zip::ZipArchive::new(temp_file)?;
 
-        let mut info: Info;
-        {
+        let info: Info = {
             // Get Info from info.dat
             let mut info_file = archive.by_name("info.dat")?;
             let mut info_contents = String::new();
             info_file.read_to_string(&mut info_contents)?;
-            info = serde_json::from_str(&info_contents)?;
-        }
+
+            serde_json::from_str(&info_contents)?
+        };
 
         let mut difficulties: DifficultyHashMap = HashMap::new();
         // For each characteristic, get the difficulty ranks
