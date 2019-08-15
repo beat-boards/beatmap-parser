@@ -87,6 +87,7 @@ pub mod difficulty {
         }
     }
 
+    /// Represents a note
     #[derive(Serialize, Deserialize, Debug)]
     pub struct Note {
         /// Time of the note, in beats
