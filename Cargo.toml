@@ -1,6 +1,6 @@
 [package]
 name = "beatmap_parser"
-version = "0.1.3"
+version = "0.1.4"
 authors = [ "Raphaël Thériault <raphael_theriault@outlook.com>" ]
 edition = "2018"
 license = "MIT"
